@@ -1,0 +1,23 @@
+BEGIN;
+--
+-- Create model Category
+--
+CREATE TABLE "ice_cream_category" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "is_published" bool NOT NULL, "title" varchar(256) NOT NULL, "slug" varchar(64) NOT NULL UNIQUE, "output_order" smallint unsigned NOT NULL CHECK ("output_order" >= 0));
+--
+-- Create model Topping
+--
+CREATE TABLE "ice_cream_topping" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "is_published" bool NOT NULL, "title" varchar(256) NOT NULL, "slug" varchar(64) NOT NULL UNIQUE);
+--
+-- Create model Wrapper
+--
+CREATE TABLE "ice_cream_wrapper" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "is_published" bool NOT NULL, "title" varchar(256) NOT NULL);
+--
+-- Create model IceCream
+--
+CREATE TABLE "ice_cream_icecream" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "is_published" bool NOT NULL, "title" varchar(256) NOT NULL, "description" text NOT NULL, "is_on_main" bool NOT NULL, "category_id" bigint NOT NULL REFERENCES "ice_cream_category" ("id") DEFERRABLE INITIALLY DEFERRED, "wrapper_id" bigint NULL UNIQUE REFERENCES "ice_cream_wrapper" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE "ice_cream_icecream_toppings" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "icecream_id" bigint NOT NULL REFERENCES "ice_cream_icecream" ("id") DEFERRABLE INITIALLY DEFERRED, "topping_id" bigint NOT NULL REFERENCES "ice_cream_topping" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "ice_cream_icecream_category_id_8adcd7b2" ON "ice_cream_icecream" ("category_id");
+CREATE UNIQUE INDEX "ice_cream_icecream_toppings_icecream_id_topping_id_d9dae896_uniq" ON "ice_cream_icecream_toppings" ("icecream_id", "topping_id");
+CREATE INDEX "ice_cream_icecream_toppings_icecream_id_d6de7267" ON "ice_cream_icecream_toppings" ("icecream_id");
+CREATE INDEX "ice_cream_icecream_toppings_topping_id_ae84b1c5" ON "ice_cream_icecream_toppings" ("topping_id");
+COMMIT;
